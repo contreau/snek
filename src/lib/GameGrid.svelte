@@ -2,19 +2,36 @@
   // ** NOTES
   // * from the point of contact with food, active squares are added in the direction of the snake's movement and then the rest of the body follows
 
-  let currentRow = 5;
-  let currentColumn = 10;
   const gridWidth = Array(21);
   const gridHeight = Array(11);
+  let currentRow = 5; // starting row #
+  let currentColumn = 10; // starting column #
+  let gameOver = false;
+  $: if (gameOver) clearInterval(lastInterval);
+  let gameStart = false;
+  let paused = true;
+  let direction = "right"; // starting direction
+  let speed = 50; // speed of snek
+  let lastInterval: any; // essentially the game loop - the interval that is constantly updated every {speed} milliseconds and with each keypress
 
   function moveUp() {
-    currentRow = currentRow > 0 ? currentRow - 1 : currentRow;
+    if (currentRow - 1 < 0) {
+      gameOver = true;
+      return;
+    } else if (currentRow > 0) {
+      currentRow = currentRow - 1;
+    } else {
+      currentRow = currentRow;
+    }
     direction = "up";
     console.log(currentRow);
   }
 
   function moveDown() {
-    if (currentRow === gridHeight.length - 1) {
+    if (currentRow + 1 > gridHeight.length - 1) {
+      gameOver = true;
+      return;
+    } else if (currentRow === gridHeight.length - 1) {
       currentRow = currentRow;
     } else if (currentRow === 0 || currentRow > 0) {
       currentRow = currentRow + 1;
@@ -24,7 +41,10 @@
   }
 
   function moveRight() {
-    if (currentColumn === gridWidth.length - 1) {
+    if (currentColumn + 1 > gridWidth.length - 1) {
+      gameOver = true;
+      return;
+    } else if (currentColumn === gridWidth.length - 1) {
       currentColumn = currentColumn;
     } else if (currentColumn === 0 || currentColumn > 0) {
       currentColumn = currentColumn + 1;
@@ -34,7 +54,14 @@
   }
 
   function moveLeft() {
-    currentColumn = currentColumn > 0 ? currentColumn - 1 : currentColumn;
+    if (currentColumn - 1 < 0) {
+      gameOver = true;
+      return;
+    } else if (currentColumn > 0) {
+      currentColumn = currentColumn - 1;
+    } else {
+      currentColumn = currentColumn;
+    }
     console.log(currentColumn);
     direction = "left";
   }
@@ -60,20 +87,30 @@
   function handleKeydown(event: KeyboardEvent) {
     switch (event.code) {
       case "ArrowUp":
-        moveSnek("down", "up", moveUp);
+        if (!gameOver) moveSnek("down", "up", moveUp);
         break;
       case "ArrowDown":
-        moveSnek("up", "down", moveDown);
+        if (!gameOver) moveSnek("up", "down", moveDown);
         break;
       case "ArrowRight":
-        moveSnek("left", "right", moveRight);
+        if (!gameOver) moveSnek("left", "right", moveRight);
         break;
       case "ArrowLeft":
-        moveSnek("right", "left", moveLeft);
+        if (!gameOver) moveSnek("right", "left", moveLeft);
         break;
       case "Space":
         if (!gameStart) gameStart = true;
-        if (paused) {
+        if (gameOver) {
+          // resets game when space bar is pressed
+          currentRow = 5;
+          currentColumn = 10;
+          direction = "right";
+          lastInterval = setInterval(() => {
+            moveRight();
+          }, speed);
+          gameOver = false;
+        } else if (!gameOver && paused) {
+          // handles pause behavior once first playthrough is started
           paused = false;
           lastInterval = setInterval(() => {
             if (direction === "up") {
@@ -92,12 +129,6 @@
         }
     }
   }
-
-  let gameStart = false;
-  let paused = true;
-  let direction = "right";
-  let speed = 90;
-  let lastInterval: any;
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -118,8 +149,10 @@
 
 {#if !gameStart}
   <p>PRESS SPACE TO PLAY</p>
-{:else if paused && gameStart}
+{:else if paused}
   <p>PAUSED</p>
+{:else if gameOver}
+  <p>GAME OVER - PRESS SPACE TO REPLAY</p>
 {/if}
 
 <style lang="scss">
@@ -140,18 +173,6 @@
     width: clamp(10px, 3.5vw, 50px);
     border: 1px solid #ffffff1c;
   }
-
-  // .row-1 {
-  //   .grid-square {
-  //     border-top: solid 2px #ffffff;
-  //   }
-  // }
-
-  // .row-10 {
-  //   .grid-square {
-  //     border-bottom: solid 2px;
-  //   }
-  // }
 
   .activeSquare {
     background-color: #ffffff;
