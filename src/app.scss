@@ -1,0 +1,32 @@
+:root {
+  font-family: "Source Code Pro Variable", sans-serif;
+  line-height: 1.6;
+  font-size: 1.125rem;
+  font-weight: 400;
+  background-color: #00433a;
+  color: #ffffff;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  // border: solid 5px rgba(255, 255, 255, 0.555);
+}
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  text-align: center;
+}
