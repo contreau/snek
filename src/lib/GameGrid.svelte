@@ -40,10 +40,16 @@
   }
 
   function generateFood() {
-    foodCol = Math.floor(Math.random() * 21);
-    foodRow = Math.floor(Math.random() * 11);
-    if (foodCol === 10 && foodRow === 5) {
-      foodCol++;
+    foodCol = Math.floor(Math.random() * 43);
+    foodRow = Math.floor(Math.random() * 19);
+    while (
+      // ensures that food does not spawn on snek body
+      Object.values(snek).some((arr) =>
+        arr.every((val, index) => val === [foodCol, foodRow][index])
+      )
+    ) {
+      foodCol = Math.floor(Math.random() * 43);
+      foodRow = Math.floor(Math.random() * 19);
     }
   }
 
@@ -188,15 +194,19 @@
   function handleKeydown(event: KeyboardEvent) {
     switch (event.code) {
       case "ArrowUp":
+      case "KeyW":
         if (!gameOver) moveSnek("down", "up", moveUp);
         break;
       case "ArrowDown":
+      case "KeyS":
         if (!gameOver) moveSnek("up", "down", moveDown);
         break;
       case "ArrowRight":
+      case "KeyD":
         if (!gameOver) moveSnek("left", "right", moveRight);
         break;
       case "ArrowLeft":
+      case "KeyA":
         if (!gameOver) moveSnek("right", "left", moveLeft);
         break;
       case "Space":
@@ -258,7 +268,7 @@
 </section>
 
 {#if !gameStart}
-  <p>PRESS SPACE TO PLAY</p>
+  <p>PRESS SPACE TO PLAY - USE WASD OR ARROW KEYS</p>
 {:else if paused}
   <p>PAUSED</p>
 {:else if gameOver}
@@ -295,6 +305,6 @@
   }
 
   p {
-    color: #fed5ed;
+    color: var(--white-text);
   }
 </style>
