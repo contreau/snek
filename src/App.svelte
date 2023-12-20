@@ -5,6 +5,7 @@
   import "@fontsource-variable/pixelify-sans";
   import GameGrid from "./lib/GameGrid.svelte";
   import { currentScore, highScore } from "./lib/store";
+  import pinksnake from "./assets/android-chrome-192x192.png";
 </script>
 
 <main>
@@ -19,12 +20,7 @@
     <GameGrid></GameGrid>
   {:else}
     <div class="mobile-message">
-      <img
-        src="src/assets/android-chrome-192x192.png"
-        alt="pink snake"
-        width="100"
-        height="100"
-      />
+      <img src={pinksnake} alt="pink snake" width="100" height="100" />
       <p>Sorry! Computer only rn.</p>
     </div>
   {/if}
