@@ -33,11 +33,11 @@
     margin-bottom: 1rem;
     font-weight: 200;
     font-size: clamp(2.5rem, 10vw, 3.8rem);
-    color: #fad1e9;
+    color: var(--white-text);
   }
   p {
     margin-top: 0;
-    color: #ffdbf0;
+    color: var(--white-text);
   }
 
   .hud-grid {
