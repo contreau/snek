@@ -1,68 +1,169 @@
 <script lang="ts">
-  // ** NOTES
-  // * from the point of contact with food, active squares are added in the direction of the snake's movement and then the rest of the body follows
+  import { currentScore, highScore } from "./store";
 
-  const gridWidth = Array(21);
-  const gridHeight = Array(11);
-  let currentRow = 5; // starting row #
-  let currentColumn = 10; // starting column #
+  // ** debug console logs if needed:
+  // console.log("column:", gridWidth);
+  // console.log("row:", gridHeight);
+  // console.log(snek);
+  // $: moves, console.log("moves", moves);
+
+  let snek: Record<string, number[]> = {
+    // coordinate pairs are in order x, y (column, row)
+    head0: [21, 9],
+  };
+
+  let moves: number[][] = [];
+
+  const gridWidth = Array(43);
+  const gridHeight = Array(19);
+  let foodRow: number;
+  let foodCol: number;
   let gameOver = false;
-  $: if (gameOver) clearInterval(lastInterval);
   let gameStart = false;
   let paused = true;
   let direction = "right"; // starting direction
   let speed = 50; // speed of snek
   let lastInterval: any; // essentially the game loop - the interval that is constantly updated every {speed} milliseconds and with each keypress
 
+  // * Reactivity
+  // score increases when head of snek intersects with food
+  $: if (snek.head0[1] === foodRow && snek.head0[0] === foodCol) {
+    snek[`head${Object.keys(snek).length}`] = moves[moves.length - 1];
+    generateFood();
+    $currentScore += 1;
+  }
+
+  // upon game over, movement interval is cleared and high score updated
+  $: if (gameOver) {
+    clearInterval(lastInterval);
+    if ($highScore < $currentScore) $highScore = $currentScore;
+  }
+
+  function generateFood() {
+    foodCol = Math.floor(Math.random() * 21);
+    foodRow = Math.floor(Math.random() * 11);
+    if (foodCol === 10 && foodRow === 5) {
+      foodCol++;
+    }
+  }
+
   function moveUp() {
-    if (currentRow - 1 < 0) {
+    let nextPosition = [snek.head0[0], snek.head0[1] - 1];
+
+    // Check for collision with self
+    for (let i = 1; i < Object.keys(snek).length; i++) {
+      if (
+        snek[`head${i}`][0] === nextPosition[0] &&
+        snek[`head${i}`][1] === nextPosition[1]
+      ) {
+        gameOver = true;
+        return;
+      }
+    }
+
+    if (snek.head0[1] - 1 < 0) {
       gameOver = true;
       return;
-    } else if (currentRow > 0) {
-      currentRow = currentRow - 1;
+    } else if (snek.head0[1] > 0) {
+      snek.head0[1] = snek.head0[1] - 1;
+      moves.push(snek.head0.slice());
+      moves = moves;
+      for (let i = 1; i < Object.keys(snek).length; i++) {
+        snek[`head${i}`] = moves[moves.length - i - 1];
+      }
     } else {
-      currentRow = currentRow;
+      snek.head0[1] = snek.head0[1];
     }
     direction = "up";
-    console.log(currentRow);
   }
 
   function moveDown() {
-    if (currentRow + 1 > gridHeight.length - 1) {
+    let nextPosition = [snek.head0[0], snek.head0[1] + 1];
+
+    // Check for collision with self
+    for (let i = 1; i < Object.keys(snek).length; i++) {
+      if (
+        snek[`head${i}`][0] === nextPosition[0] &&
+        snek[`head${i}`][1] === nextPosition[1]
+      ) {
+        gameOver = true;
+        return;
+      }
+    }
+
+    if (snek.head0[1] + 1 > gridHeight.length - 1) {
       gameOver = true;
       return;
-    } else if (currentRow === gridHeight.length - 1) {
-      currentRow = currentRow;
-    } else if (currentRow === 0 || currentRow > 0) {
-      currentRow = currentRow + 1;
+    } else if (snek.head0[1] === gridHeight.length - 1) {
+      snek.head0[1] = snek.head0[1];
+    } else if (snek.head0[1] === 0 || snek.head0[1] > 0) {
+      snek.head0[1] = snek.head0[1] + 1;
+      moves.push(snek.head0.slice());
+      moves = moves;
+      for (let i = 1; i < Object.keys(snek).length; i++) {
+        snek[`head${i}`] = moves[moves.length - i - 1];
+      }
     }
     direction = "down";
-    console.log(currentRow);
   }
 
   function moveRight() {
-    if (currentColumn + 1 > gridWidth.length - 1) {
+    let nextPosition = [snek.head0[0] + 1, snek.head0[1]];
+
+    // Check for collision with self
+    for (let i = 1; i < Object.keys(snek).length; i++) {
+      if (
+        snek[`head${i}`][0] === nextPosition[0] &&
+        snek[`head${i}`][1] === nextPosition[1]
+      ) {
+        gameOver = true;
+        return;
+      }
+    }
+
+    if (snek.head0[0] + 1 > gridWidth.length - 1) {
       gameOver = true;
       return;
-    } else if (currentColumn === gridWidth.length - 1) {
-      currentColumn = currentColumn;
-    } else if (currentColumn === 0 || currentColumn > 0) {
-      currentColumn = currentColumn + 1;
+    } else if (snek.head0[0] === gridWidth.length - 1) {
+      snek.head0[0] = snek.head0[0];
+    } else if (snek.head0[0] === 0 || snek.head0[0] > 0) {
+      snek.head0[0] = snek.head0[0] + 1;
+      moves.push(snek.head0.slice());
+      moves = moves;
+      for (let i = 1; i < Object.keys(snek).length; i++) {
+        snek[`head${i}`] = moves[moves.length - i - 1];
+      }
     }
     direction = "right";
-    console.log(currentColumn);
   }
 
   function moveLeft() {
-    if (currentColumn - 1 < 0) {
+    let nextPosition = [snek.head0[0] - 1, snek.head0[1]];
+
+    // Check for collision with self
+    for (let i = 1; i < Object.keys(snek).length; i++) {
+      if (
+        snek[`head${i}`][0] === nextPosition[0] &&
+        snek[`head${i}`][1] === nextPosition[1]
+      ) {
+        gameOver = true;
+        return;
+      }
+    }
+
+    if (snek.head0[0] - 1 < 0) {
       gameOver = true;
       return;
-    } else if (currentColumn > 0) {
-      currentColumn = currentColumn - 1;
+    } else if (snek.head0[0] > 0) {
+      snek.head0[0] = snek.head0[0] - 1;
+      moves.push(snek.head0.slice());
+      moves = moves;
+      for (let i = 1; i < Object.keys(snek).length; i++) {
+        snek[`head${i}`] = moves[moves.length - i - 1];
+      }
     } else {
-      currentColumn = currentColumn;
+      snek.head0[0] = snek.head0[0];
     }
-    console.log(currentColumn);
     direction = "left";
   }
 
@@ -99,16 +200,22 @@
         if (!gameOver) moveSnek("right", "left", moveLeft);
         break;
       case "Space":
-        if (!gameStart) gameStart = true;
+        if (!gameStart) {
+          generateFood();
+          gameStart = true;
+        }
         if (gameOver) {
           // resets game when space bar is pressed
-          currentRow = 5;
-          currentColumn = 10;
+          $currentScore = 0;
+          snek = {
+            head0: [21, 9],
+          };
           direction = "right";
           lastInterval = setInterval(() => {
             moveRight();
           }, speed);
           gameOver = false;
+          generateFood();
         } else if (!gameOver && paused) {
           // handles pause behavior once first playthrough is started
           paused = false;
@@ -137,11 +244,14 @@
   {#each gridHeight as _, row}
     <div class="grid-row">
       {#each gridWidth as _, col}
-        <div
-          class={col === currentColumn && row === currentRow
-            ? "grid-square activeSquare"
-            : "grid-square"}
-        ></div>
+        <!-- sets active color on snek parts share coordinate indices  -->
+        {#if Object.values(snek).some( (arr) => arr.every((val, index) => val === [col, row][index]) )}
+          <div class="grid-square activeSquare"></div>
+        {:else if col === foodCol && row === foodRow}
+          <div class="grid-square foodSquare"></div>
+        {:else}
+          <div class="grid-square"></div>
+        {/if}
       {/each}
     </div>
   {/each}
@@ -159,9 +269,10 @@
   .game-grid {
     display: grid;
     place-items: center;
-    border: solid 2px #ffffff;
+    border-radius: 5px;
     max-width: fit-content;
     margin: 0 auto;
+    background-color: #191919;
   }
 
   .grid-row {
@@ -169,12 +280,17 @@
     display: flex;
   }
   .grid-square {
-    height: clamp(10px, 3.5vw, 50px);
-    width: clamp(10px, 3.5vw, 50px);
-    border: 1px solid #ffffff1c;
+    height: clamp(10px, 3.5vw, 28px);
+    width: clamp(10px, 3.5vw, 28px);
+    border-radius: 7.5px;
+    border: solid 1px #ff46b517;
   }
 
   .activeSquare {
+    background-color: #ff46b5;
+  }
+
+  .foodSquare {
     background-color: #ffffff;
   }
 </style>
