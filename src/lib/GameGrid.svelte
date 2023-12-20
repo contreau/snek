@@ -293,4 +293,8 @@
   .foodSquare {
     background-color: #ffffff;
   }
+
+  p {
+    color: #fed5ed;
+  }
 </style>
