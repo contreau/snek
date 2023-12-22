@@ -3,47 +3,39 @@
   import "@fontsource-variable/source-code-pro";
   // Supports weights 400-700
   import "@fontsource-variable/pixelify-sans";
+  import MainMenu from "./lib/MainMenu.svelte";
   import GameGrid from "./lib/GameGrid.svelte";
-  import { currentScore, highScore } from "./lib/store";
+  import { classicActive, currentScore } from "./lib/store";
   import pinksnake from "./assets/android-chrome-192x192.png";
+  $: if (!$classicActive) $currentScore = 0;
 </script>
 
 <main>
-  <h1>snek</h1>
-
-  {#if window.screen.width >= 1280}
-    <div class="hud-grid">
-      <p><span style="color: #ff46b5;">high score:</span> {$highScore}</p>
-      <p>definitely not snake</p>
-      <p><span style="color: #ff46b5;">current score:</span> {$currentScore}</p>
-    </div>
-    <GameGrid></GameGrid>
-  {:else}
+  <header>
+    <h1>snek</h1>
+  </header>
+  {#if window.screen.width <= 1280}
     <div class="mobile-message">
       <img src={pinksnake} alt="pink snake" width="100" height="100" />
       <p>Sorry! Computer only rn.</p>
     </div>
+  {:else if $classicActive}
+    <GameGrid></GameGrid>
+  {:else}
+    <MainMenu />
   {/if}
 </main>
 
 <style lang="scss">
-  h1 {
-    font-family: "Pixelify Sans Variable", sans-serif;
-    margin-top: 0;
-    margin-bottom: 1rem;
-    font-weight: 200;
-    font-size: clamp(2.5rem, 10vw, 3.8rem);
-    color: var(--white-text);
-  }
-  p {
-    margin-top: 0;
-    color: var(--white-text);
-  }
-
-  .hud-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5.5rem;
+  header {
+    h1 {
+      font-family: "Pixelify Sans Variable", sans-serif;
+      margin: 0;
+      margin-bottom: 1rem;
+      font-weight: 200;
+      font-size: clamp(2.5rem, 10vw, 3.5rem);
+      color: var(--snake-pink);
+    }
   }
 
   .mobile-message {

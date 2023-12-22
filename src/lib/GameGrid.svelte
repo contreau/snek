@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentScore, highScore } from "./store";
+  import { currentScore, highScore, classicActive } from "./store";
 
   // ** debug console logs if needed:
   // console.log("column:", gridWidth);
@@ -12,6 +12,7 @@
     head0: [21, 9],
   };
 
+  // stores all moves made by the snek head
   let moves: number[][] = [];
 
   const gridWidth = Array(43);
@@ -216,6 +217,7 @@
         }
         if (gameOver) {
           // resets game when space bar is pressed
+          moves = [];
           $currentScore = 0;
           snek = {
             head0: [21, 9],
@@ -250,6 +252,29 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
+<section class="above-game">
+  <div class="hud">
+    <p>
+      <button on:click={() => ($classicActive = false)} class="menu-button"
+        >return to menu</button
+      >
+    </p>
+    <span>//</span>
+    <p style="color: var(--classic-mode)">classic mode</p>
+  </div>
+  <div class="hud">
+    <p>
+      <span style="color: var(--snake-pink);">current score:</span>
+      {$currentScore}
+    </p>
+    <span>//</span>
+    <p>
+      <span style="color: var(--high-score-green);">high score:</span>
+      {$highScore}
+    </p>
+  </div>
+</section>
+
 <section class="game-grid">
   {#each gridHeight as _, row}
     <div class="grid-row">
@@ -276,6 +301,33 @@
 {/if}
 
 <style lang="scss">
+  p {
+    color: var(--white-text);
+  }
+  button {
+    cursor: pointer;
+    transition: 0.2s all;
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+  .hud {
+    display: flex;
+    justify-content: flex-start;
+    gap: 1.5rem;
+  }
+
+  .above-game {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1em;
+
+    p {
+      margin-top: 0;
+      font-size: 1.05rem;
+    }
+  }
   .game-grid {
     display: grid;
     place-items: center;
@@ -297,14 +349,10 @@
   }
 
   .activeSquare {
-    background-color: #ff46b5;
+    background-color: var(--snake-pink);
   }
 
   .foodSquare {
     background-color: #ffffff;
-  }
-
-  p {
-    color: var(--white-text);
   }
 </style>

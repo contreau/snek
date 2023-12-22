@@ -6,6 +6,11 @@
   background-color: #161616;
   color: #ffffff;
   --white-text: #fbe5f2;
+  --snake-pink: #ff46b5;
+  --high-score-green: #1afe88;
+  --classic-mode: #5c8dff;
+  --speed-mode: #ffce10;
+  --timed-mode: #ff3649;
 }
 
 *,
@@ -29,4 +34,19 @@ body {
   margin: 0 auto;
   padding: 0 2rem;
   text-align: center;
+}
+
+button {
+  font: inherit;
+  padding: 0;
+  margin: 0;
+  border: none;
+  color: var(--white-text);
+  background-color: transparent;
+  cursor: pointer;
+  transition: 0.2s all;
+  will-change: transform;
+  &:hover {
+    transform: scale(1.2);
+  }
 }
