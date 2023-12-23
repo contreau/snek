@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { currentScore, highScore, classicActive } from "./store";
+  import {
+    currentClassicScore,
+    classicHighScore,
+    classicActive,
+  } from "./store";
 
   // ** debug console logs if needed:
   // console.log("column:", gridWidth);
@@ -31,13 +35,14 @@
   $: if (snek.head0[1] === foodRow && snek.head0[0] === foodCol) {
     snek[`head${Object.keys(snek).length}`] = moves[moves.length - 1];
     generateFood();
-    $currentScore += 1;
+    $currentClassicScore += 1;
   }
 
   // upon game over, movement interval is cleared and high score updated
   $: if (gameOver) {
     clearInterval(lastInterval);
-    if ($highScore < $currentScore) $highScore = $currentScore;
+    if ($classicHighScore < $currentClassicScore)
+      $classicHighScore = $currentClassicScore;
   }
 
   function generateFood() {
@@ -218,7 +223,7 @@
         if (gameOver) {
           // resets game when space bar is pressed
           moves = [];
-          $currentScore = 0;
+          $currentClassicScore = 0;
           snek = {
             head0: [21, 9],
           };
@@ -265,12 +270,12 @@
   <div class="hud">
     <p>
       <span style="color: var(--snake-pink);">current score:</span>
-      {$currentScore}
+      {$currentClassicScore}
     </p>
     <span>//</span>
     <p>
-      <span style="color: var(--high-score-green);">high score:</span>
-      {$highScore}
+      <span style="color: var(--high-score);">high score:</span>
+      {$classicHighScore}
     </p>
   </div>
 </section>

@@ -1,14 +1,12 @@
 <script lang="ts">
-  import { highScore, classicActive } from "./store";
+  import {
+    classicHighScore,
+    classicActive,
+    speedyHighScore,
+    speedyActive,
+  } from "./store";
   import trophy from "../assets/trophy-65x65.svg";
-  let speedmodeText = "movement speed jumps with each bite.";
   let timedmodeText = "grab food in time or shed your skin.";
-  function speedComingSoonMsg() {
-    speedmodeText = "under construction!";
-    setTimeout(() => {
-      speedmodeText = "movement speed jumps with each bite.";
-    }, 1500);
-  }
   function timedComingSoonMsg() {
     timedmodeText = "under construction!";
     setTimeout(() => {
@@ -26,7 +24,9 @@
     <ul class="heading-row">
       <li class="mode-name">game mode</li>
       <li class="description-text">&nbsp;</li>
-      <li><img src={trophy} alt="trophy" height="46" width="46" /></li>
+      <li style="max-height: 46px;">
+        <img src={trophy} alt="trophy" height="46" width="46" />
+      </li>
     </ul>
     <ul class="classic-row">
       <li class="mode-name">
@@ -36,16 +36,17 @@
         >
       </li>
       <li class="description-text">the snek you know and love.</li>
-      <li class="score">{$highScore}</li>
+      <li class="score">{$classicHighScore}</li>
     </ul>
     <ul class="speed-row">
       <li class="mode-name">
-        <button on:click={speedComingSoonMsg} style="color: var(--speed-mode);"
-          >speedy</button
+        <button
+          on:click={() => ($speedyActive = true)}
+          style="color: var(--speed-mode);">speedy</button
         >
       </li>
-      <li class="description-text">{speedmodeText}</li>
-      <li class="score">0</li>
+      <li class="description-text">movement speed jumps with each bite.</li>
+      <li class="score">{$speedyHighScore}</li>
     </ul>
     <ul class="time-row">
       <li class="mode-name">
@@ -114,7 +115,7 @@
     max-width: 1300px;
     // border: solid 1px var(--white-text);
     margin: 0 auto;
-    margin-top: 3.5rem;
+    margin-top: 2.5rem;
     border-radius: 5px;
     padding: 0 5rem;
   }
@@ -153,7 +154,8 @@
 
       li.score {
         min-width: 46px;
-        margin-bottom: 0.2rem;
+        margin-bottom: 0.3rem;
+        color: var(--high-score);
       }
     }
   }
