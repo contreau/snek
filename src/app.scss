@@ -4,7 +4,7 @@
   font-size: 1.125rem;
   font-weight: 400;
   background-color: #161616;
-  color: #ffffff;
+  color: #fbe5f2;
   --white-text: #fbe5f2;
   --snake-pink: #ff46b5;
   --high-score: #ffce10;
@@ -27,6 +27,13 @@ body {
 
 body {
   min-height: 100vh;
+  background-size: 17px 17px;
+  background-image: linear-gradient(
+      to right,
+      rgba(255, 70, 181, 0.12) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(255, 70, 181, 0.12) 1px, transparent 1px);
 }
 
 #app {
@@ -37,6 +44,10 @@ body {
   margin: 0 auto;
   padding: 0 2rem;
   text-align: center;
+}
+
+p {
+  color: var(--white-text);
 }
 
 button {
@@ -50,6 +61,48 @@ button {
   transition: 0.2s all;
   will-change: transform;
   &:hover {
-    transform: scale(1.2);
+    transform: scale(1.15);
   }
+}
+
+.hud {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1.5rem;
+}
+
+.above-game {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1em;
+
+  p {
+    margin-top: 0;
+    font-size: 1.05rem;
+  }
+}
+.game-grid {
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  border: solid 2px #ffffff9f;
+  max-width: fit-content;
+  margin: 0 auto;
+  background-color: #1a1a1a;
+}
+
+.grid-row {
+  max-width: fit-content;
+  display: flex;
+}
+.grid-square {
+  height: clamp(10px, 3.5vw, 28px);
+  width: clamp(10px, 3.5vw, 28px);
+  border-radius: 7.5px;
+  // border: solid 1px #ff46b517;
+}
+
+.activeSquare {
+  background-color: var(--snake-pink);
 }

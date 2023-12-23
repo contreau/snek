@@ -27,7 +27,7 @@
   let gameStart = false;
   let paused = true;
   let direction = "right"; // starting direction
-  let speed = 50; // speed of snek
+  let speed = 80; // speed of snek
   let lastInterval: any; // essentially the game loop - the interval that is constantly updated every {speed} milliseconds and with each keypress
 
   // * Reactivity
@@ -306,58 +306,7 @@
 {/if}
 
 <style lang="scss">
-  p {
-    color: var(--white-text);
-  }
-  button {
-    cursor: pointer;
-    transition: 0.2s all;
-    &:hover {
-      transform: scale(1.1);
-    }
-  }
-  .hud {
-    display: flex;
-    justify-content: flex-start;
-    gap: 1.5rem;
-  }
-
-  .above-game {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 1em;
-
-    p {
-      margin-top: 0;
-      font-size: 1.05rem;
-    }
-  }
-  .game-grid {
-    display: grid;
-    place-items: center;
-    border-radius: 5px;
-    max-width: fit-content;
-    margin: 0 auto;
-    background-color: #191919;
-  }
-
-  .grid-row {
-    max-width: fit-content;
-    display: flex;
-  }
-  .grid-square {
-    height: clamp(10px, 3.5vw, 28px);
-    width: clamp(10px, 3.5vw, 28px);
-    border-radius: 7.5px;
-    border: solid 1px #ff46b517;
-  }
-
-  .activeSquare {
-    background-color: var(--snake-pink);
-  }
-
   .foodSquare {
-    background-color: #ffffff;
+    background-color: var(--classic-mode);
   }
 </style>

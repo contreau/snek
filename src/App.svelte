@@ -14,7 +14,6 @@
     timedActive,
     currentTimedScore,
   } from "./lib/store";
-  import pinksnake from "./assets/android-chrome-192x192.png";
   $: if (!$classicActive) $currentClassicScore = 0;
   $: if (!$speedyActive) $currentSpeedyScore = 0;
   $: if (!$timedActive) $currentTimedScore = 0;
@@ -40,7 +39,6 @@
 <main>
   {#if window.screen.width <= 1280}
     <div class="mobile-message">
-      <img src={pinksnake} alt="pink snake" width="100" height="100" />
       <p>Sorry! Computer only rn.</p>
     </div>
   {:else if $classicActive}
