@@ -15,10 +15,6 @@
   }
 </script>
 
-<div class="snakehead">
-  <div class="tongue"></div>
-</div>
-
 <section class="menu-container">
   <div class="selections">
     <ul class="heading-row">
@@ -61,56 +57,6 @@
 </section>
 
 <style lang="scss">
-  .snakehead {
-    position: relative;
-    margin: 0 auto;
-    width: 55px;
-    min-height: 55px;
-    background-color: var(--snake-pink);
-    border-radius: 7.5px;
-    &::before {
-      position: absolute;
-      content: "";
-      background-color: #ffffff;
-      border-radius: 30px;
-      height: 18px;
-      width: 7px;
-      bottom: 21%;
-      left: 23%;
-      rotate: -30deg;
-    }
-    &::after {
-      position: absolute;
-      content: "";
-      background-color: #ffffff;
-      border-radius: 30px;
-      height: 18px;
-      width: 7px;
-      bottom: 21%;
-      right: 23%;
-      rotate: 30deg;
-    }
-    .tongue {
-      z-index: -1;
-      position: absolute;
-      background-color: #b76aff;
-      border-bottom: 5px solid #161616;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      height: 30px;
-      width: 10px;
-      bottom: 0%;
-      right: 41%;
-      animation: flick 0.7s ease infinite alternate;
-    }
-
-    @keyframes flick {
-      100% {
-        bottom: -25%;
-      }
-    }
-  }
-
   .menu-container {
     max-width: 1300px;
     // border: solid 1px var(--white-text);
