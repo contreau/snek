@@ -4,15 +4,10 @@
     classicActive,
     speedyHighScore,
     speedyActive,
+    timedActive,
+    timedHighScore,
   } from "./store";
   import trophy from "../assets/trophy-65x65.svg";
-  let timedmodeText = "grab food in time or shed your skin.";
-  function timedComingSoonMsg() {
-    timedmodeText = "under construction!";
-    setTimeout(() => {
-      timedmodeText = "grab food in time or shed your skin.";
-    }, 1500);
-  }
 </script>
 
 <section class="menu-container">
@@ -46,12 +41,13 @@
     </ul>
     <ul class="time-row">
       <li class="mode-name">
-        <button on:click={timedComingSoonMsg} style="color: var(--timed-mode);"
-          >time crunch</button
+        <button
+          on:click={() => ($timedActive = true)}
+          style="color: var(--timed-mode);">time crunch</button
         >
       </li>
-      <li class="description-text">{timedmodeText}</li>
-      <li class="score">0</li>
+      <li class="description-text">grab food in time or shed your skin.</li>
+      <li class="score">{$timedHighScore}</li>
     </ul>
   </div>
 </section>

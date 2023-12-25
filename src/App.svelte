@@ -14,6 +14,7 @@
     timedActive,
     currentTimedScore,
   } from "./lib/store";
+  import TimedMode from "./lib/TimedMode.svelte";
   $: if (!$classicActive) $currentClassicScore = 0;
   $: if (!$speedyActive) $currentSpeedyScore = 0;
   $: if (!$timedActive) $currentTimedScore = 0;
@@ -45,6 +46,8 @@
     <ClassicMode />
   {:else if $speedyActive}
     <SpeedyMode />
+  {:else if $timedActive}
+    <TimedMode />
   {:else}
     <MainMenu />
   {/if}
