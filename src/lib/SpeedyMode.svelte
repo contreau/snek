@@ -77,7 +77,6 @@
     } else if (snek.head0[1] > 0) {
       snek.head0[1] = snek.head0[1] - 1;
       moves.push(snek.head0.slice());
-      moves = moves;
       for (let i = 1; i < Object.keys(snek).length; i++) {
         snek[`head${i}`] = moves[moves.length - i - 1];
       }
@@ -109,7 +108,6 @@
     } else if (snek.head0[1] === 0 || snek.head0[1] > 0) {
       snek.head0[1] = snek.head0[1] + 1;
       moves.push(snek.head0.slice());
-      moves = moves;
       for (let i = 1; i < Object.keys(snek).length; i++) {
         snek[`head${i}`] = moves[moves.length - i - 1];
       }
@@ -139,7 +137,6 @@
     } else if (snek.head0[0] === 0 || snek.head0[0] > 0) {
       snek.head0[0] = snek.head0[0] + 1;
       moves.push(snek.head0.slice());
-      moves = moves;
       for (let i = 1; i < Object.keys(snek).length; i++) {
         snek[`head${i}`] = moves[moves.length - i - 1];
       }
@@ -167,7 +164,6 @@
     } else if (snek.head0[0] > 0) {
       snek.head0[0] = snek.head0[0] - 1;
       moves.push(snek.head0.slice());
-      moves = moves;
       for (let i = 1; i < Object.keys(snek).length; i++) {
         snek[`head${i}`] = moves[moves.length - i - 1];
       }

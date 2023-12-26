@@ -1,5 +1,8 @@
 <script lang="ts">
   import { currentTimedScore, timedHighScore, timedActive } from "./store";
+  // TODO:
+  // * create algo for calculating appropriate countdown time based on snakehead distance from spawned food; accordingly update all invocations of countdown()
+  // * add meta description / og tags
 
   // ** debug console logs if needed:
   // console.log("column:", gridWidth);
@@ -79,7 +82,6 @@
     } else if (snek.head0[1] > 0) {
       snek.head0[1] = snek.head0[1] - 1;
       moves.push(snek.head0.slice());
-      moves = moves;
       for (let i = 1; i < Object.keys(snek).length; i++) {
         snek[`head${i}`] = moves[moves.length - i - 1];
       }
@@ -111,7 +113,6 @@
     } else if (snek.head0[1] === 0 || snek.head0[1] > 0) {
       snek.head0[1] = snek.head0[1] + 1;
       moves.push(snek.head0.slice());
-      moves = moves;
       for (let i = 1; i < Object.keys(snek).length; i++) {
         snek[`head${i}`] = moves[moves.length - i - 1];
       }
@@ -141,7 +142,6 @@
     } else if (snek.head0[0] === 0 || snek.head0[0] > 0) {
       snek.head0[0] = snek.head0[0] + 1;
       moves.push(snek.head0.slice());
-      moves = moves;
       for (let i = 1; i < Object.keys(snek).length; i++) {
         snek[`head${i}`] = moves[moves.length - i - 1];
       }
@@ -169,7 +169,6 @@
     } else if (snek.head0[0] > 0) {
       snek.head0[0] = snek.head0[0] - 1;
       moves.push(snek.head0.slice());
-      moves = moves;
       for (let i = 1; i < Object.keys(snek).length; i++) {
         snek[`head${i}`] = moves[moves.length - i - 1];
       }
@@ -197,7 +196,7 @@
   }
 
   // Listen to keydown event at the component level
-  async function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(event: KeyboardEvent) {
     switch (event.code) {
       case "ArrowUp":
       case "KeyW":
@@ -234,6 +233,7 @@
           }, speed);
           gameOver = false;
           generateFood();
+          countdown(5);
         } else if (!gameOver && paused) {
           // handles pause behavior once first playthrough is started
           paused = false;
@@ -248,26 +248,58 @@
               moveLeft();
             }
           }, speed);
+          clearInterval(globalCountdown);
+          countdown(pausedTime);
         } else {
           paused = true;
           clearInterval(lastInterval);
+          clearInterval(globalCountdown);
         }
     }
   }
 
   let timeDisplay: number = 0; // dynamic text that displays in html
   let globalCountdown: any; // main countdown interval that is cleared every collision / food acquisition
+  let pausedTime: number; // current second to hold when paused
 
   function countdown(timeAmount: number) {
     // essential function invoked upon collisions / food gains
     timeDisplay = timeAmount; // immediately updates display timer
     let currentSecond = timeAmount;
+    pausedTime = timeAmount;
     globalCountdown = setInterval(() => {
       if (currentSecond === 0) {
+        // determines how much to shave off snek based on length
+        if (Object.keys(snek).length >= 8 && Object.keys(snek).length < 12) {
+          for (let i = 0; i < 2; i++) {
+            delete snek[`head${Object.keys(snek).length - 1}`];
+          }
+          $currentTimedScore = $currentTimedScore - 2;
+        } else if (Object.keys(snek).length >= 12) {
+          for (let i = 0; i < 4; i++) {
+            delete snek[`head${Object.keys(snek).length - 1}`];
+          }
+          $currentTimedScore = $currentTimedScore - 4;
+        } else {
+          delete snek[`head${Object.keys(snek).length - 1}`];
+          if ($currentTimedScore > 0)
+            $currentTimedScore = $currentTimedScore - 1;
+        }
+
+        if (Object.keys(snek).length === 0) {
+          // ends game if snek has lost all mass
+          gameOver = true;
+          const snakehead = document.querySelector(".activeSquare");
+          snakehead?.classList.remove("activeSquare");
+          return;
+        }
         timeDisplay = 0;
         clearInterval(globalCountdown);
+        countdown(5); // recursive call to infinitely invoke the countdown
       } else {
+        // decrement time as normal
         currentSecond--;
+        pausedTime--;
         timeDisplay = currentSecond;
       }
     }, 1000);
