@@ -1,7 +1,7 @@
 <script lang="ts">
   import { currentTimedScore, timedHighScore, timedActive } from "./store";
   // TODO:
-  // * create algo for calculating appropriate countdown time based on snakehead distance from spawned food; accordingly update all invocations of countdown()
+  // * create dismissable dialog explaining timed mechanics. should be dismissed entirely until a new page refresh
   // * add meta description / og tags
 
   // ** debug console logs if needed:
@@ -36,7 +36,7 @@
     generateFood();
     $currentTimedScore += 1;
     clearInterval(globalCountdown);
-    countdown(5);
+    countdown(calculateCountdown());
   }
 
   // upon game over, movement interval is cleared and high score updated
@@ -60,6 +60,16 @@
       foodCol = Math.floor(Math.random() * 43);
       foodRow = Math.floor(Math.random() * 19);
     }
+  }
+
+  function calculateCountdown(): number {
+    let distance =
+      Math.abs(snek.head0[0] - foodCol) + Math.abs(snek.head0[1] - foodRow);
+    let speed = 43 / 3.5;
+    let timeToReachFood = distance / speed;
+    let bufferTime = 1;
+    let totalTime = Math.floor(timeToReachFood + bufferTime);
+    return totalTime;
   }
 
   function moveUp() {
@@ -218,7 +228,7 @@
         if (!gameStart) {
           generateFood();
           gameStart = true;
-          countdown(5);
+          countdown(calculateCountdown());
         }
         if (gameOver) {
           // resets game when space bar is pressed
@@ -233,7 +243,7 @@
           }, speed);
           gameOver = false;
           generateFood();
-          countdown(5);
+          countdown(calculateCountdown());
         } else if (!gameOver && paused) {
           // handles pause behavior once first playthrough is started
           paused = false;
@@ -295,7 +305,7 @@
         }
         timeDisplay = 0;
         clearInterval(globalCountdown);
-        countdown(5); // recursive call to infinitely invoke the countdown
+        countdown(calculateCountdown()); // recursive call to infinitely invoke the countdown
       } else {
         // decrement time as normal
         currentSecond--;
