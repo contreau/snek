@@ -9,3 +9,4 @@ export const currentTimedScore = writable<number>(0);
 export const classicActive = writable<boolean>(false);
 export const speedyActive = writable<boolean>(false);
 export const timedActive = writable<boolean>(false);
+export const modalClosed = writable<boolean>(false);

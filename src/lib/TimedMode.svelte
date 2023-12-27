@@ -1,8 +1,11 @@
 <script lang="ts">
-  import { currentTimedScore, timedHighScore, timedActive } from "./store";
-  // TODO:
-  // * create dismissable dialog explaining timed mechanics. should be dismissed entirely until a new page refresh
-  // * add meta description / og tags
+  import {
+    currentTimedScore,
+    timedHighScore,
+    timedActive,
+    modalClosed,
+  } from "./store";
+  import { onMount } from "svelte";
 
   // ** debug console logs if needed:
   // console.log("column:", gridWidth);
@@ -314,9 +317,49 @@
       }
     }, 1000);
   }
+
+  let modal: any;
+  onMount(() => {
+    modal = document.querySelector("dialog");
+    if (!$modalClosed) modal?.showModal();
+  });
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
+
+<dialog>
+  <p>know before you play</p>
+  <ul>
+    <li>the time you have to reach food is based on your distance from it.</li>
+    <li>
+      when the countdown reaches the end of 0, you start losing mass.
+      <ul>
+        <li>
+          body length is 1-7 units: <span style="color: var(--timed-mode);"
+            >-1</span
+          >
+        </li>
+        <li>
+          body length is 8-11 units: <span style="color: var(--timed-mode);"
+            >-2</span
+          >
+        </li>
+        <li>
+          body length is 12+ units: <span style="color: var(--timed-mode);"
+            >-4</span
+          >
+        </li>
+      </ul>
+    </li>
+    <li>you have until the end of '0' to reach food.</li>
+  </ul>
+  <button
+    on:click={() => {
+      modal?.close();
+      $modalClosed = true;
+    }}>ok, thanks</button
+  >
+</dialog>
 
 <section class="above-game">
   <div class="hud">
@@ -368,6 +411,61 @@
 {/if}
 
 <style lang="scss">
+  dialog {
+    margin-top: 17%;
+    p {
+      font-size: 1.5rem;
+      font-weight: 650;
+      line-height: 0;
+      margin-top: 0.7rem;
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+    opacity: 0;
+    color: var(--white-text);
+    background-color: #161616;
+    animation: fadeIn 0.2s ease-in forwards;
+    border: solid 2px var(--snake-pink);
+    border-radius: 15px;
+    max-width: 800px;
+    text-align: left;
+
+    ul {
+      padding-left: 0;
+      font-size: 1rem;
+      list-style: none;
+      li {
+        ul {
+          padding-left: 1.5rem;
+          li::before {
+            color: var(--white-text);
+          }
+        }
+      }
+      li::before {
+        content: "\2022";
+        color: var(--snake-pink);
+        padding-right: 0.5em;
+      }
+      li + li {
+        margin-top: 0.8rem;
+      }
+    }
+
+    button {
+      color: var(--snake-pink);
+      display: block;
+      margin: 0 auto;
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+  }
+
+  @keyframes fadeIn {
+    100% {
+      opacity: 1;
+    }
+  }
   .foodSquare {
     background-color: var(--timed-mode);
   }
