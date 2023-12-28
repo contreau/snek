@@ -31,6 +31,9 @@
   let direction = "right"; // starting direction
   let speed = 80; // speed of snek
   let lastInterval: any; // essentially the game loop - the interval that is constantly updated every {speed} milliseconds and with each keypress
+  let scoreChange: HTMLSpanElement | null;
+  let scoreNote: number = 0;
+  let scoreChangeClass: boolean = false;
 
   // * Reactivity
   // score increases when head of snek intersects with food
@@ -70,7 +73,7 @@
       Math.abs(snek.head0[0] - foodCol) + Math.abs(snek.head0[1] - foodRow);
     let speed = 43 / 3.5;
     let timeToReachFood = distance / speed;
-    let bufferTime = 1;
+    let bufferTime = 2;
     let totalTime = Math.floor(timeToReachFood + bufferTime);
     return totalTime;
   }
@@ -283,20 +286,35 @@
     globalCountdown = setInterval(() => {
       if (currentSecond === 0) {
         // determines how much to shave off snek based on length
-        if (Object.keys(snek).length >= 8 && Object.keys(snek).length < 12) {
+        if (Object.keys(snek).length >= 8 && Object.keys(snek).length < 15) {
           for (let i = 0; i < 2; i++) {
             delete snek[`head${Object.keys(snek).length - 1}`];
           }
           $currentTimedScore = $currentTimedScore - 2;
-        } else if (Object.keys(snek).length >= 12) {
+          scoreNote = 2;
+          scoreChangeClass = true;
+          setTimeout(() => {
+            scoreChangeClass = false;
+          }, 2000);
+        } else if (Object.keys(snek).length >= 15) {
           for (let i = 0; i < 4; i++) {
             delete snek[`head${Object.keys(snek).length - 1}`];
           }
           $currentTimedScore = $currentTimedScore - 4;
+          scoreNote = 4;
+          scoreChangeClass = true;
+          setTimeout(() => {
+            scoreChangeClass = false;
+          }, 2000);
         } else {
           delete snek[`head${Object.keys(snek).length - 1}`];
           if ($currentTimedScore > 0)
             $currentTimedScore = $currentTimedScore - 1;
+          scoreNote = 1;
+          scoreChangeClass = true;
+          setTimeout(() => {
+            scoreChangeClass = false;
+          }, 2000);
         }
 
         if (Object.keys(snek).length === 0) {
@@ -321,6 +339,7 @@
   let modal: any;
   onMount(() => {
     modal = document.querySelector("dialog");
+    scoreChange = document?.querySelector(".score-change") ?? null;
     if (!$modalClosed) modal?.showModal();
   });
 </script>
@@ -340,18 +359,17 @@
           >
         </li>
         <li>
-          body length is 8-11 units: <span style="color: var(--timed-mode);"
+          body length is 8-14 units: <span style="color: var(--timed-mode);"
             >-2</span
           >
         </li>
         <li>
-          body length is 12+ units: <span style="color: var(--timed-mode);"
+          body length is 15+ units: <span style="color: var(--timed-mode);"
             >-4</span
           >
         </li>
       </ul>
     </li>
-    <li>you have until the end of '0' to reach food.</li>
   </ul>
   <button
     on:click={() => {
@@ -372,7 +390,10 @@
     <p style="color: var(--timed-mode)">time crunch mode</p>
   </div>
   <p class="counter">{timeDisplay}</p>
-  <div class="hud">
+  <div class="hud scores">
+    <span class="score-change" class:showScoreChange={scoreChangeClass}
+      >-{scoreNote}</span
+    >
     <p>
       <span style="color: var(--snake-pink);">current score:</span>
       {$currentTimedScore}
@@ -466,6 +487,46 @@
       opacity: 1;
     }
   }
+
+  .scores {
+    position: relative;
+
+    .score-change {
+      opacity: 0;
+      position: absolute;
+      color: var(--timed-mode);
+      font-size: 1.4rem;
+      font-weight: 600;
+      top: -2rem;
+      left: 39%;
+      transform: rotate(25deg);
+      transition: opacity 0.2s;
+    }
+  }
+
+  .showScoreChange {
+    animation: swell 2s ease 1;
+  }
+
+  @keyframes swell {
+    25% {
+      opacity: 1;
+      transform: scale(1.3) rotate(25deg);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1) rotate(25deg);
+    }
+    75% {
+      opacity: 1;
+      transform: scale(1.3) rotate(25deg);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1) rotate(25deg);
+    }
+  }
+
   .foodSquare {
     background-color: var(--timed-mode);
   }

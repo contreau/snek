@@ -33,7 +33,6 @@
     generateFood();
     $currentSpeedyScore += 1;
     if (speed >= 15) speed -= 1.5;
-    console.log(speed);
   }
 
   // upon game over, movement interval is cleared and high score updated
