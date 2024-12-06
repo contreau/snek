@@ -56,7 +56,7 @@
   <footer>
     <p>
       made by <a href="https://conorkelley.me" target="_blank">CK</a> //
-      <a href="https://github.com/zenDev-2/snek" target="_blank">source code</a>
+      <a href="https://github.com/contreau/snek" target="_blank">source code</a>
     </p>
   </footer>
 {/if}
